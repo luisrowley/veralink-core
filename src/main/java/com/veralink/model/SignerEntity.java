@@ -17,13 +17,14 @@ public class SignerEntity {
 	public String companyName;
 	public String managerEmail;
 	public Date creationDate;
-	private BillingPlan billingPlan;
+	public BillingPlan billingPlan;
 	private String apiToken;
 
 	public SignerEntity(BillingPlan plan, String company, String managerEmail) {
 		this.billingPlan = plan;
 		this.companyName = company;
 		this.managerEmail = managerEmail;
+		this.creationDate = new Date();
 		this._UUID = generateUUID();
 	}
 
