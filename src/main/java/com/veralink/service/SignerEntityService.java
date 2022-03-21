@@ -2,6 +2,9 @@ package com.veralink.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONObject;
+
 import com.veralink.model.SignerEntity;
 
 public class SignerEntityService {
@@ -17,6 +20,10 @@ public class SignerEntityService {
 	public List<SignerEntity> find() {
 		createEntityList();
 		return signerEntities;
+	}
+	
+	public SignerEntity create(JSONObject jsonEntity) {
+		
 	}
 
 	public void add(SignerEntity entity) {

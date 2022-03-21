@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class SignerEntity {
 
 	private String _UUID;
-	public String companyName;
+	public String name;
 	public String managerEmail;
 	public Date creationDate;
 	public BillingPlan billingPlan;
@@ -25,7 +25,7 @@ public class SignerEntity {
 	public SignerEntity(BillingPlan plan, String company, String managerEmail, String apiToken) {
 		this._UUID = tokenService.generateUUID();
 		this.billingPlan = plan;
-		this.companyName = company;
+		this.name = company;
 		this.managerEmail = managerEmail;
 		this._apiToken = apiToken;
 		this.creationDate = new Date();
