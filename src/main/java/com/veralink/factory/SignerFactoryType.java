@@ -1,11 +1,12 @@
 package com.veralink.factory;
 
+// import com.veralink.core.enums.BillingPlan;
 import com.veralink.model.SignerEntity;
 
 /**
  * Interface that provides method for manipulate an object SignerEntity.
  */
-public interface SignerEntityFactory {
+public interface SignerFactoryType {
 	
-	SignerEntity createEntity(String name);
+	SignerEntity createEntity(String billingPlan);
 }

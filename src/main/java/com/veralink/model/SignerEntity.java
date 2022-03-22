@@ -1,15 +1,16 @@
 package com.veralink.model;
 
 import java.util.Date;
-import java.util.UUID;
 import com.veralink.core.enums.BillingPlan;
 import com.veralink.service.TokenService;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignerEntity {
@@ -18,16 +19,13 @@ public class SignerEntity {
 	public String name;
 	public String managerEmail;
 	public Date creationDate;
-	public BillingPlan billingPlan;
+	public String billingPlan;
 	private TokenService tokenService = new TokenService();
 	private String _apiToken;
 
-	public SignerEntity(BillingPlan plan, String company, String managerEmail, String apiToken) {
+	public SignerEntity(BillingPlan plan) {
+		this.billingPlan = plan.toString();
 		this._UUID = tokenService.generateUUID();
-		this.billingPlan = plan;
-		this.name = company;
-		this.managerEmail = managerEmail;
-		this._apiToken = apiToken;
 		this.creationDate = new Date();
 	}
 
