@@ -37,4 +37,3 @@ public class SignerEntity {
 		return this._UUID;
 	}
 }
-

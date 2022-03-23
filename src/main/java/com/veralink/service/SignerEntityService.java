@@ -18,7 +18,7 @@ public class SignerEntityService {
 			factory = new SignerFactory();
 		}
 	}
-	
+
 	public void createEntityList() {
 		if(signerEntities == null) {
 			signerEntities = new ArrayList<>();
