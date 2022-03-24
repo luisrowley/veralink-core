@@ -8,5 +8,5 @@ import com.veralink.model.SignerEntity;
  */
 public interface SignerFactoryType {
 	
-	SignerEntity createEntity(String name, BillingPlan billingPlan);
+	SignerEntity createEntity(String name, String email, BillingPlan billingPlan);
 }

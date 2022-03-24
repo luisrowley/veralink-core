@@ -6,14 +6,14 @@ import com.veralink.model.SignerEntity;
 public class SignerFactory implements SignerFactoryType {
 
 	@Override
-	public SignerEntity createEntity(String name, BillingPlan billingPlan) {
+	public SignerEntity createEntity(String name, String email, BillingPlan billingPlan) {
 		switch (billingPlan) {
 			case PAY_PER_USE:
-				return new SignerEntity(name, BillingPlan.PAY_PER_USE);
+				return new SignerEntity(name, email, BillingPlan.PAY_PER_USE);
 			case FIXED_MONTHLY:
-				return new SignerEntity(name, BillingPlan.FIXED_MONTHLY);
+				return new SignerEntity(name, email, BillingPlan.FIXED_MONTHLY);
 			default:
-				return new SignerEntity(name, BillingPlan.STARTER);
+				return new SignerEntity(name, email, BillingPlan.STARTER);
 		}
 	}
 }

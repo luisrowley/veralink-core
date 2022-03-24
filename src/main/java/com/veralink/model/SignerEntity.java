@@ -16,14 +16,16 @@ import lombok.Setter;
 public class SignerEntity {
 
 	private String _UUID;
-	public String name;
+	private String name;
+	private String email;
 	public Date creationDate;
-	public String billingPlan;
+	private BillingPlan billingPlan;
 	private TokenService tokenService = new TokenService();
 
-	public SignerEntity(String name, BillingPlan billingPlan) {
-		this.name = name;
-		this.billingPlan = billingPlan.toString();
+	public SignerEntity(String name, String email, BillingPlan billingPlan) {
+		this.setName(name);
+		this.setEmail(email);
+		this.setBillingPlan(billingPlan);
 		this._UUID = tokenService.generateUUID();
 		this.creationDate = new Date();
 	}
@@ -34,5 +36,29 @@ public class SignerEntity {
 	
 	public String getUUID() {
 		return this._UUID;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public BillingPlan getBillingPlan() {
+		return billingPlan;
+	}
+
+	public void setBillingPlan(BillingPlan billingPlan) {
+		this.billingPlan = billingPlan;
 	}
 }
