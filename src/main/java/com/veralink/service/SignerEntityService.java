@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import com.veralink.factory.SignerFactory;
 import com.veralink.model.SignerEntity;
 
+@Service
 public class SignerEntityService {
 	
 	private SignerFactory factory;
@@ -30,9 +32,9 @@ public class SignerEntityService {
 		return signerEntities;
 	}
 
-	public SignerEntity create(JSONObject jsonEntity) {
+	public SignerEntity create(SignerEntity jsonEntity) {
 		createFactory();
-		SignerEntity entity = factory.createEntity((String) jsonEntity.get("type"));
+		SignerEntity entity = factory.createEntity(jsonEntity.name, jsonEntity.billingPlan);
 		return entity;
 	}
 

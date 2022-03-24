@@ -22,7 +22,7 @@ import com.veralink.model.SignerEntity;
 
 
 @RestController
-@RequestMapping("/api/V1/signer")
+@RequestMapping("/api/entities")
 public class SignerEntityController {
 
 	private static final Logger logger = LogManager.getLogger(SignerEntityController.class);
@@ -30,7 +30,7 @@ public class SignerEntityController {
 	@Autowired
 	private SignerEntityService signerEntityService;
 
-	@GetMapping
+	@GetMapping("/list")
 	public ResponseEntity<List<SignerEntity>> find() {
 		if(signerEntityService.find().isEmpty()) {
 			return ResponseEntity.notFound().build(); 
@@ -38,12 +38,12 @@ public class SignerEntityController {
 		logger.info(signerEntityService.find());
 		return ResponseEntity.ok(signerEntityService.find());
 	}
-	
-	@PostMapping
+
+	@PostMapping("/create")
 	@ResponseBody
-	public ResponseEntity<SignerEntity> create(@RequestBody JSONObject jsonEntity) {
+	public ResponseEntity<SignerEntity> create(@RequestBody SignerEntity jsonEntity) {
 		try {
-			if(ObjectValidator.isJSONValid(jsonEntity.toString())) {
+			if(jsonEntity != null) {
 				SignerEntity newEntity = signerEntityService.create(jsonEntity);
 				signerEntityService.add(newEntity);
 				var uri = ServletUriComponentsBuilder.fromCurrentRequest().path(newEntity.getUUID()).build().toUri();
@@ -56,4 +56,4 @@ public class SignerEntityController {
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
 		}
 	}
- }
+}

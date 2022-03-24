@@ -17,21 +17,20 @@ public class SignerEntity {
 
 	private String _UUID;
 	public String name;
-	public String managerEmail;
 	public Date creationDate;
 	public String billingPlan;
 	private TokenService tokenService = new TokenService();
-	private String _apiToken;
 
-	public SignerEntity(BillingPlan plan) {
-		this.billingPlan = plan.toString();
+	public SignerEntity(String name, BillingPlan billingPlan) {
+		this.name = name;
+		this.billingPlan = billingPlan.toString();
 		this._UUID = tokenService.generateUUID();
 		this.creationDate = new Date();
 	}
 
-	public String getApiToken() {
+	/*public String getApiToken() {
 		return _apiToken;
-	}
+	}*/
 	
 	public String getUUID() {
 		return this._UUID;
