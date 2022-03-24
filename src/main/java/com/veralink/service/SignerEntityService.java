@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import com.veralink.core.enums.BillingPlan;
 import com.veralink.factory.SignerFactory;
 import com.veralink.model.SignerEntity;
 
@@ -34,7 +35,8 @@ public class SignerEntityService {
 
 	public SignerEntity create(SignerEntity jsonEntity) {
 		createFactory();
-		SignerEntity entity = factory.createEntity(jsonEntity.name, jsonEntity.billingPlan);
+		var billingPlan = BillingPlan.valueOf(jsonEntity.billingPlan);
+		SignerEntity entity = factory.createEntity(jsonEntity.name, billingPlan);
 		return entity;
 	}
 
