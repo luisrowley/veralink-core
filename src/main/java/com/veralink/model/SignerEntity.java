@@ -29,10 +29,6 @@ public class SignerEntity {
 		this._UUID = tokenService.generateUUID();
 		this.creationDate = new Date();
 	}
-
-	/*public String getApiToken() {
-		return _apiToken;
-	}*/
 	
 	public String getUUID() {
 		return this._UUID;

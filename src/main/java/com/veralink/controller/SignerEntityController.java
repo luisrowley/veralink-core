@@ -49,8 +49,8 @@ public class SignerEntityController {
 			} else {
 				return ResponseEntity.badRequest().body(null);
 			}
-		} catch(Exception jsonException) {
-			logger.error("JSON fields are not parsable. " + jsonException);
+		} catch(Exception nullException) {
+			logger.error("JSON fields are null. " + nullException);
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
 		}
 	}
