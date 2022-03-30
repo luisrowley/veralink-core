@@ -15,13 +15,13 @@ public class SignerEntityService {
 	private List<SignerEntity> signerEntities;
 	
 	public void createFactory() {
-		if(factory == null) {
+		if (factory == null) {
 			factory = new SignerFactory();
 		}
 	}
 
 	public void createEntityList() {
-		if(signerEntities == null) {
+		if (signerEntities == null) {
 			signerEntities = new ArrayList<>();
 		}
 	}
