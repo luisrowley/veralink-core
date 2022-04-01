@@ -1,9 +1,13 @@
 package com.veralink.model;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import com.veralink.core.enums.BillingPlan;
+import com.veralink.service.SignatureService;
 import com.veralink.service.TokenService;
 
+import COSE.CoseException;
+import COSE.OneKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,16 +22,30 @@ public class SignerEntity {
 	private String _UUID;
 	private String name;
 	private String email;
-	public Date creationDate;
+	private Date creationDate;
 	private BillingPlan billingPlan;
+	private OneKey signKey;
 	private TokenService tokenService = new TokenService();
 
 	public SignerEntity(String name, String email, BillingPlan billingPlan) {
+		this._UUID = tokenService.generateUUID();
 		this.setName(name);
 		this.setEmail(email);
 		this.setBillingPlan(billingPlan);
-		this._UUID = tokenService.generateUUID();
-		this.creationDate = new Date();
+		this.setSignKey();
+		this.setCreationDate(new Date());
+	}
+	
+	public OneKey getSignKey() {
+		return signKey;
+	}
+
+	public void setSignKey() {
+		try {
+			this.signKey = SignatureService.generateOneKeyForSigning();
+		} catch (CoseException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public String getUUID() {
@@ -48,6 +66,14 @@ public class SignerEntity {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 
 	public BillingPlan getBillingPlan() {
