@@ -39,6 +39,7 @@ public class VeralinkCoreApplication {
 			byte[] signedMessage = SignatureService.signCBORMessage(message, key);
 			System.out.println(signedMessage);
 			System.out.println(SignatureService.validateCoseBytes(signedMessage, key));
+			System.out.println(SignatureService.getDecodedCBOR(signedMessage, key));
 	  	} catch (Exception e) {
 	        e.printStackTrace();
 	    }

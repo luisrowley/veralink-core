@@ -42,6 +42,11 @@ public class SignatureService {
         return messageDecoded.validate(key);
 	}
 	
+	public static CBORObject getDecodedCBOR(byte[] coseSigned, OneKey key) throws CoseException {
+		Sign1Message messageDecoded = (Sign1Message) Sign1Message.DecodeFromBytes(coseSigned);
+        return CBORObject.DecodeFromBytes(messageDecoded.GetContent());
+	}
+	
 	public static OneKey generateOneKeyForSigning() throws CoseException {
 		return OneKey.generateKey(AlgorithmID.ECDSA_256);
 	}

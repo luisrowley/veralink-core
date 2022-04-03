@@ -1,5 +1,5 @@
 package com.veralink.controller;
 
-public class MessageSignController {
+public class SignatureController {
 
 }
