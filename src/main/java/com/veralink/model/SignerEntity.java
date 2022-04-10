@@ -1,6 +1,5 @@
 package com.veralink.model;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import com.veralink.core.enums.BillingPlan;
 import com.veralink.service.SignatureService;
@@ -42,7 +41,7 @@ public class SignerEntity {
 
 	public void setSignKey() {
 		try {
-			this.signKey = SignatureService.generateOneKeyForSigning();
+			this.signKey = SignatureService.generateRandomOneKey();
 		} catch (CoseException e) {
 			e.printStackTrace();
 		}

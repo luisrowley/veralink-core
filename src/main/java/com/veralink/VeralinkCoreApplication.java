@@ -17,7 +17,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.veralink.core.security.JWTAuthorizationFilter;
+import com.veralink.service.KeyService;
 import com.veralink.service.SignatureService;
+import com.veralink.service.VerifierService;
 
 import COSE.OneKey;
 
@@ -31,20 +33,20 @@ public class VeralinkCoreApplication {
 			
 			String message = "myTest";
 			
-			KeyPair keyPair = SignatureService.generateECKeyPair();
+			KeyPair keyPair = KeyService.generateECKeyPair();
 			ECPublicKey ecPublicKey = (ECPublicKey) keyPair.getPublic();
 			ECPrivateKey ecPrivateKey = (ECPrivateKey) keyPair.getPrivate();
-			OneKey key = SignatureService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
+			OneKey key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
 			
 			byte[] signedMessage = SignatureService.signCBORMessage(message, key);
 			System.out.println(signedMessage);
-			System.out.println(SignatureService.validateCoseBytes(signedMessage, key));
-			System.out.println(SignatureService.getDecodedCBOR(signedMessage, key));
+			System.out.println(VerifierService.validateCoseBytes(signedMessage, key));
+			System.out.println(VerifierService.getDecodedCBOR(signedMessage, key));
 	  	} catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
-	
+
 	@EnableWebSecurity
 	@Configuration
 	class WebSecurityConfig extends WebSecurityConfigurerAdapter {
