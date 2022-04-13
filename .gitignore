@@ -35,6 +35,6 @@ bin/
 bin
 
 ### config ###
-src/main/resources/application.properties
+**/src/main/resources/application.properties
 docker-compose.yml
 
