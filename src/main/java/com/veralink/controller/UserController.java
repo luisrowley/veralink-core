@@ -15,13 +15,13 @@ public class UserController {
 	private TokenService tokenService = new TokenService();
 
 	@PostMapping("create")
-	public User login(@RequestParam("user") String username, @RequestParam("password") String pwd) {
+	public User signup(@RequestParam("user") String username, @RequestParam("password") String pwd) {
 		
 		// TODO: authenticate user against database creds
 		String token = tokenService.generateJWTToken(username);
 		User user = new User();
-		user.setUser(username);
-		user.setToken(token);		
+		user.setName(username);
+		user.setToken(token);	
 		return user;
 	}
 }
