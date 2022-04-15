@@ -6,22 +6,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.veralink.model.User;
-import com.veralink.service.TokenService;
+import com.veralink.service.UserService;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-	
-	private TokenService tokenService = new TokenService();
+
+	private UserService userService = new UserService();
 
 	@PostMapping("create")
-	public User signup(@RequestParam("user") String username, @RequestParam("password") String pwd) {
+	public User signup(@RequestParam("user") String username, @RequestParam("password") String pass) {
 		
 		// TODO: authenticate user against database creds
-		String token = tokenService.generateJWTToken(username);
-		User user = new User();
-		user.setName(username);
-		user.setToken(token);	
-		return user;
+		User newUser = userService.createNewUserWithCreds(username, pass);
+		return newUser;
 	}
 }

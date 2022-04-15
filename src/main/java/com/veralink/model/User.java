@@ -1,19 +1,45 @@
 package com.veralink.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="users")
 public class User {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id;
+    @Column(name="id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private int id;
+	@Column(name = "name")
 	private String name;
+	@Column(name = "passwd")
 	private String passwd;
+	@Column(name = "token")
 	private String token;
+	@Column(name = "entities")
 	private SignerEntity[] entities;
+
+	public User() {
+		
+	}
+
+	public User(String name, String passwd) {
+		this.name = name;
+		this.passwd = passwd;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
