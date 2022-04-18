@@ -1,8 +1,5 @@
 package com.veralink.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,18 +22,36 @@ public class UserController {
 	private UserService userService = new UserService();
 
 	@PostMapping("create")
-	public ResponseEntity<User> signUp(@RequestParam("user") String username, @RequestParam("password") String pass) {
-	    try {
-			User newUser = userService.createNewUserWithCreds(username, pass);
-	        User _user = userRepository.save(newUser);
-	        return new ResponseEntity<>(_user, HttpStatus.CREATED);
-	      } catch (Exception e) {
-	        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	      }
+	public ResponseEntity<User> create(@RequestParam("user") String username, @RequestParam("password") String pass) {
+    	User existingUser = userRepository.findByName(username);
+
+    	if (existingUser == null) {
+			try {
+				User newUser = userService.createNewUserWithCreds(username, pass);
+		        User _user = userRepository.save(newUser);
+		        return new ResponseEntity<>(_user, HttpStatus.CREATED);
+	
+		      } catch (Exception e) {
+		        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		      }
+    	}
+    	return new ResponseEntity<>(null, HttpStatus.ALREADY_REPORTED);
 	}
 
-	// TODO: authenticate user against database creds
-	public ResponseEntity<User> signIn(@RequestParam("user") String username, @RequestParam("password") String pass) {
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	@PostMapping("signin")
+	public ResponseEntity<User> signin(@RequestParam("user") String username, @RequestParam("password") String pass) {
+        User existingUser = userRepository.findByName(username);
+    
+        if (existingUser == null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        else {
+        	if (userService.checkUserPassword(existingUser, pass)) {
+        		return new ResponseEntity<>(existingUser, HttpStatus.ACCEPTED);
+        	}
+        	else {
+        		return new ResponseEntity<>(existingUser, HttpStatus.UNAUTHORIZED);
+        	}
+        }
 	}
 }
