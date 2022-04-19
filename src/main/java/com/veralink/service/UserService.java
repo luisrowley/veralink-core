@@ -2,14 +2,19 @@ package com.veralink.service;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.veralink.data.UserRepository;
 import com.veralink.model.User;
 
 @Service
 @Transactional
 public class UserService {
+	
+	@Autowired
+	UserRepository userRepository;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 	private TokenService tokenService = new TokenService();
@@ -24,5 +29,14 @@ public class UserService {
 	
 	public boolean checkUserPassword(User user, String password) {
 		return bCryptPasswordEncoder.matches(password, user.getPasswd());
+	}
+	
+	public boolean updateApiTokenForUser(User _user) {
+		if (_user.getToken() != null) {
+    		String token = tokenService.generateJWTToken(_user.getName());
+    		_user.setToken(token);
+    		return true;
+		}
+		return false;
 	}
 }

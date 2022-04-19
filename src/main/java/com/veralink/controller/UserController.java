@@ -43,14 +43,19 @@ public class UserController {
         User existingUser = userRepository.findByName(username);
     
         if (existingUser == null) {
-        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        	return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         else {
         	if (userService.checkUserPassword(existingUser, pass)) {
-        		return new ResponseEntity<>(existingUser, HttpStatus.ACCEPTED);
+        		// UserService update API token
+        		if(userService.updateApiTokenForUser(existingUser)) {
+        			return new ResponseEntity<>(existingUser, HttpStatus.ACCEPTED);
+        		}
+        		// If not API token, server error
+        		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         	}
         	else {
-        		return new ResponseEntity<>(existingUser, HttpStatus.UNAUTHORIZED);
+        		return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         	}
         }
 	}
