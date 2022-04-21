@@ -4,10 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import com.veralink.model.User;
+import com.veralink.model.SignerEntity;
 
 @Component
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-	  User findByName(String name);
+public interface SignerEntityRepository extends JpaRepository<SignerEntity, Long> {
+
 }

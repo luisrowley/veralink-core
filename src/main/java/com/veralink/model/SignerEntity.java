@@ -1,33 +1,56 @@
 package com.veralink.model;
 
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Type;
+
 import com.veralink.core.enums.BillingPlan;
 import com.veralink.service.SignatureService;
 import com.veralink.service.TokenService;
 
 import COSE.CoseException;
 import COSE.OneKey;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity
+@Table(name="entities")
 public class SignerEntity {
 
-	private String _UUID;
+    @Id
+    @Column(name="id")
+	private String id;
+	@Column(name = "name")
 	private String name;
+	@Column(name = "email")
 	private String email;
+	@Column(name = "creationDate")
 	private Date creationDate;
+	@Embedded
+	@Column(name = "billingPlan")
 	private BillingPlan billingPlan;
-	private OneKey signKey;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+ 
+	@Transient
+	private String signKey;
+
+	@Transient
 	private TokenService tokenService = new TokenService();
 
 	public SignerEntity(String name, String email, BillingPlan billingPlan) {
-		this._UUID = tokenService.generateUUID();
+		this.id = tokenService.generateUUID();
 		this.setName(name);
 		this.setEmail(email);
 		this.setBillingPlan(billingPlan);
@@ -35,20 +58,20 @@ public class SignerEntity {
 		this.setCreationDate(new Date());
 	}
 	
-	public OneKey getSignKey() {
+	public String getSignKey() {
 		return signKey;
 	}
 
 	public void setSignKey() {
 		try {
-			this.signKey = SignatureService.generateRandomOneKey();
+			this.signKey = SignatureService.generateRandomOneKey().toString();
 		} catch (CoseException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public String getUUID() {
-		return this._UUID;
+		return this.id;
 	}
 
 	public String getName() {

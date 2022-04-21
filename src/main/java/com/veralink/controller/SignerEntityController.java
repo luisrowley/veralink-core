@@ -44,6 +44,7 @@ public class SignerEntityController {
 			if(jsonEntity != null) {
 				SignerEntity newEntity = signerEntityService.create(jsonEntity);
 				signerEntityService.add(newEntity);
+				// persist to DB
 				var uri = ServletUriComponentsBuilder.fromCurrentRequest().path(newEntity.getUUID()).build().toUri();
 				return ResponseEntity.created(uri).body(null);
 			} else {

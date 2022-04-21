@@ -1,5 +1,8 @@
 package com.veralink.core.enums;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public enum BillingPlan {
    STARTER {
       public String toString() {

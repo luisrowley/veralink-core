@@ -1,10 +1,14 @@
 package com.veralink.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 @Entity
@@ -14,14 +18,15 @@ public class User {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 	@Column(name = "name")
 	private String name;
 	@Column(name = "passwd")
 	private String passwd;
 	@Column(name = "token")
 	private String token;
-	@Column(name = "entities")
+	@OneToMany(cascade = CascadeType.ALL)
+	@OrderColumn
 	private SignerEntity[] entities;
 
 	public User() {
@@ -33,11 +38,11 @@ public class User {
 		this.passwd = passwd;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
