@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.veralink.service.SignerEntityService;
+import com.veralink.data.SignerEntityRepository;
+import com.veralink.data.UserRepository;
 import com.veralink.model.SignerEntity;
+import com.veralink.model.User;
 
 
 @RestController
@@ -27,6 +32,12 @@ public class SignerEntityController {
 
 	@Autowired
 	private SignerEntityService signerEntityService;
+	
+	@Autowired
+	private SignerEntityRepository entityRepository;
+	
+	@Autowired
+	UserRepository userRepository;
 
 	@GetMapping("/list")
 	public ResponseEntity<List<SignerEntity>> find() {
@@ -42,9 +53,17 @@ public class SignerEntityController {
 	public ResponseEntity<SignerEntity> create(@RequestBody SignerEntity jsonEntity) {
 		try {
 			if(jsonEntity != null) {
+				String signedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+				// set entity with basic data
+				User userDetails = userRepository.findByName(signedUser);
 				SignerEntity newEntity = signerEntityService.create(jsonEntity);
+				// set entity with user details
+				newEntity.setCreatedBy(signedUser);
+				newEntity.setUser(userDetails);
+				// TODO: remove this method call
 				signerEntityService.add(newEntity);
 				// persist to DB
+				entityRepository.save(newEntity);
 				var uri = ServletUriComponentsBuilder.fromCurrentRequest().path(newEntity.getUUID()).build().toUri();
 				return ResponseEntity.created(uri).body(null);
 			} else {

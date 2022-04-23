@@ -21,8 +21,9 @@ public class UserService {
 
 	public User createNewUserWithCreds(String username, String pass) {
 		String secpass = bCryptPasswordEncoder.encode(pass);
-		String token = tokenService.generateJWTToken(username);
 		User user = new User(username, secpass);
+
+		String token = tokenService.generateJWTToken(user.getId(), username);
 		user.setToken(token);
 		return user;
 	}
@@ -33,7 +34,7 @@ public class UserService {
 	
 	public boolean updateApiTokenForUser(User _user) {
 		if (_user.getToken() != null) {
-    		String token = tokenService.generateJWTToken(_user.getName());
+    		String token = tokenService.generateJWTToken(_user.getId(), _user.getName());
     		_user.setToken(token);
     		return true;
 		}

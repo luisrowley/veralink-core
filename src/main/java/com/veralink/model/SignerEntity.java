@@ -6,14 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Type;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.veralink.core.enums.BillingPlan;
 import com.veralink.service.SignatureService;
@@ -27,14 +27,22 @@ import COSE.OneKey;
 public class SignerEntity {
 
     @Id
+    @GeneratedValue
     @Column(name="id")
-	private String id;
+	private Long id;
 	@Column(name = "name")
 	private String name;
 	@Column(name = "email")
 	private String email;
 	@Column(name = "creationDate")
 	private Date creationDate;
+	@Column(name = "createdBy")
+	private String createdBy;
+    @Column(name="totalCodes")
+	private int totalCodes;
+    @Column(name="last_signature_date")
+	private Date lastSignature;
+
 	@Embedded
 	@Column(name = "billingPlan")
 	private BillingPlan billingPlan;
@@ -42,15 +50,18 @@ public class SignerEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
- 
+
 	@Transient
-	private String signKey;
+	private String uuid;
+
+	@Transient
+	private OneKey signKey;
 
 	@Transient
 	private TokenService tokenService = new TokenService();
 
 	public SignerEntity(String name, String email, BillingPlan billingPlan) {
-		this.id = tokenService.generateUUID();
+		this.uuid = tokenService.generateUUID();
 		this.setName(name);
 		this.setEmail(email);
 		this.setBillingPlan(billingPlan);
@@ -58,20 +69,20 @@ public class SignerEntity {
 		this.setCreationDate(new Date());
 	}
 	
-	public String getSignKey() {
+	public OneKey getSignKey() {
 		return signKey;
 	}
 
 	public void setSignKey() {
 		try {
-			this.signKey = SignatureService.generateRandomOneKey().toString();
+			this.signKey = SignatureService.generateRandomOneKey();
 		} catch (CoseException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public String getUUID() {
-		return this.id;
+		return this.uuid;
 	}
 
 	public String getName() {
@@ -104,5 +115,21 @@ public class SignerEntity {
 
 	public void setBillingPlan(BillingPlan billingPlan) {
 		this.billingPlan = billingPlan;
+	}
+	
+    public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }

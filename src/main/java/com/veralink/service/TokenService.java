@@ -22,7 +22,8 @@ public class TokenService {
         return uuidStr;
 	}
 	
-	public String generateJWTToken(String username) {
+	public String generateJWTToken(Long userId, String username) {
+		// TODO: move to .env file
 		String secretKey = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60";
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList("ROLE_USER");
@@ -35,6 +36,8 @@ public class TokenService {
 						grantedAuthorities.stream()
 								.map(GrantedAuthority::getAuthority)
 								.collect(Collectors.toList()))
+				.claim("username", username)
+				.claim("userId", userId)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 600000))
 				.signWith(SignatureAlgorithm.HS512,

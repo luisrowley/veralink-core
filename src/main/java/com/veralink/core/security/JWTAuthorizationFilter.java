@@ -24,6 +24,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
 	private final String HEADER = "Authorization";
 	private final String PREFIX = "Bearer ";
+	// TODO: move to .env file
 	private final String SECRET = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60";
 	
 
@@ -32,6 +33,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 		try {
 			if (checkJWTToken(request, response)) {
 				Claims claims = validateToken(request);
+				System.out.print(claims);
 				if (claims.get("authorities") != null) {
 					setUpSpringAuthentication(claims);
 				} else {
