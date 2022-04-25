@@ -32,8 +32,6 @@ public class SignerEntity {
 	private Long id;
 	@Column(name = "name")
 	private String name;
-	@Column(name = "email")
-	private String email;
 	@Column(name = "creationDate")
 	private Date creationDate;
 	@Column(name = "createdBy")
@@ -42,10 +40,6 @@ public class SignerEntity {
 	private int totalCodes;
     @Column(name="last_signature_date")
 	private Date lastSignature;
-
-	@Embedded
-	@Column(name = "billingPlan")
-	private BillingPlan billingPlan;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -60,11 +54,12 @@ public class SignerEntity {
 	@Transient
 	private TokenService tokenService = new TokenService();
 
-	public SignerEntity(String name, String email, BillingPlan billingPlan) {
+	public SignerEntity() {		
+	}
+
+	public SignerEntity(String name) {
 		this.uuid = tokenService.generateUUID();
 		this.setName(name);
-		this.setEmail(email);
-		this.setBillingPlan(billingPlan);
 		this.setSignKey();
 		this.setCreationDate(new Date());
 	}
@@ -92,14 +87,6 @@ public class SignerEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
 	
 	public Date getCreationDate() {
 		return creationDate;
@@ -107,14 +94,6 @@ public class SignerEntity {
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
-	}
-
-	public BillingPlan getBillingPlan() {
-		return billingPlan;
-	}
-
-	public void setBillingPlan(BillingPlan billingPlan) {
-		this.billingPlan = billingPlan;
 	}
 	
     public User getUser() {

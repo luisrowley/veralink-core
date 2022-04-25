@@ -34,9 +34,7 @@ public class SignerEntityService {
 	public SignerEntity create(SignerEntity jsonEntity) {
 		createFactory();
 		SignerEntity entity = factory.createEntity(
-				jsonEntity.getName(),
-				jsonEntity.getEmail(),
-				jsonEntity.getBillingPlan()
+				jsonEntity.getName()
 		);
 		return entity;
 	}

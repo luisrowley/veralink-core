@@ -4,11 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.veralink.core.enums.BillingPlan;
 import com.veralink.data.UserRepository;
+import com.veralink.model.SignerEntity;
 import com.veralink.model.User;
 import com.veralink.service.UserService;
 
@@ -22,12 +26,13 @@ public class UserController {
 	private UserService userService = new UserService();
 
 	@PostMapping("create")
-	public ResponseEntity<User> create(@RequestParam("user") String username, @RequestParam("password") String pass) {
-    	User existingUser = userRepository.findByName(username);
+	@ResponseBody
+	public ResponseEntity<User> create(@RequestBody User jsonEntity) {
+    	User existingUser = userRepository.findByName(jsonEntity.getName());
 
     	if (existingUser == null) {
 			try {
-				User newUser = userService.createNewUserWithCreds(username, pass);
+				User newUser = userService.createNewUserWithCreds(jsonEntity);
 		        User _user = userRepository.save(newUser);
 		        return new ResponseEntity<>(_user, HttpStatus.CREATED);
 	
@@ -39,14 +44,14 @@ public class UserController {
 	}
 
 	@PostMapping("signin")
-	public ResponseEntity<User> signin(@RequestParam("user") String username, @RequestParam("password") String pass) {
-        User existingUser = userRepository.findByName(username);
+	public ResponseEntity<User> signin(@RequestBody User jsonEntity) {
+        User existingUser = userRepository.findByName(jsonEntity.getName());
     
         if (existingUser == null) {
         	return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         else {
-        	if (userService.checkUserPassword(existingUser, pass)) {
+        	if (userService.checkUserPassword(existingUser, jsonEntity.getPassword())) {
         		// UserService update API token
         		if(userService.updateApiTokenForUser(existingUser)) {
         			return new ResponseEntity<>(existingUser, HttpStatus.ACCEPTED);

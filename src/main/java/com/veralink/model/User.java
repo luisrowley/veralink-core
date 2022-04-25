@@ -9,10 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
+import com.veralink.core.enums.BillingPlan;
 
 @Entity
 @Table(name="users")
@@ -24,10 +25,15 @@ public class User {
     private Long id;
 	@Column(name = "name")
 	private String name;
-	@Column(name = "passwd")
-	private String passwd;
-	@Column(name = "token")
+	@Column(name = "email")
+	private String email;
+	@Column(name = "password")
+	private String password;
+	@Column(name = "token", columnDefinition = "LONGBLOB")
 	private String token;
+	@Column(name = "billingPlan")
+	private String billingPlan;
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@OrderColumn
 	private List<SignerEntity> entities = new ArrayList<>();
@@ -36,9 +42,11 @@ public class User {
 		
 	}
 
-	public User(String name, String passwd) {
-		this.name = name;
-		this.passwd = passwd;
+	public User(String name,  String email, String password, String billingPlan) {
+		this.setName(name);
+		this.setEmail(email);
+		this.setPassword(password);
+		this.setBillingPlan(billingPlan);
 	}
 
 	public Long getId() {
@@ -56,13 +64,21 @@ public class User {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getPasswd() {
-		return passwd;
+	
+	public String getEmail() {
+		return email;
 	}
 
-	public void setPasswd(String passwd) {
-		this.passwd = passwd;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getToken() {
@@ -71,6 +87,14 @@ public class User {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+	
+	public String getBillingPlan() {
+		return billingPlan;
+	}
+
+	public void setBillingPlan(String billingPlan) {
+		this.billingPlan = billingPlan;
 	}
 
 	public List<SignerEntity> getEntities() {
