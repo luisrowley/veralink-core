@@ -1,5 +1,6 @@
 package com.veralink.factory.types;
 
+import com.veralink.core.enums.BillingPlan;
 import com.veralink.model.User;
 
 public interface UserFactoryType {
