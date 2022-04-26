@@ -1,18 +1,18 @@
 package com.veralink.controller;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -35,17 +35,26 @@ public class SignerEntityController {
 	
 	@Autowired
 	private SignerEntityRepository entityRepository;
-	
+
 	@Autowired
 	UserRepository userRepository;
 
-	@GetMapping("/list")
-	public ResponseEntity<List<SignerEntity>> find() {
-		if(signerEntityService.find().isEmpty()) {
-			return ResponseEntity.notFound().build(); 
+	@GetMapping("/find")
+	@ResponseBody
+	public ResponseEntity<SignerEntity> find(@RequestParam Long id) {
+		Optional<SignerEntity> entity = entityRepository.findById(id);
+		User userDetails = getCurrentSignedUser();
+	
+		if(entity.isEmpty()) {
+			logger.info(entityRepository.findById(id));
+			return ResponseEntity.notFound().build();
 		}
-		logger.info(signerEntityService.find());
-		return ResponseEntity.ok(signerEntityService.find());
+		if(userDetails.getId() != entity.get().getUser().getId()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+		}
+		else {
+			return ResponseEntity.ok(entity.get());
+		}
 	}
 
 	@PostMapping("/create")
@@ -53,15 +62,11 @@ public class SignerEntityController {
 	public ResponseEntity<SignerEntity> create(@RequestBody SignerEntity jsonEntity) {
 		try {
 			if(jsonEntity != null) {
-				String signedUser = SecurityContextHolder.getContext().getAuthentication().getName();
-				// set entity with basic data
-				User userDetails = userRepository.findByName(signedUser);
+				User userDetails = getCurrentSignedUser();
 				SignerEntity newEntity = signerEntityService.create(jsonEntity);
 				// set entity with user details
-				newEntity.setCreatedBy(signedUser);
+				newEntity.setCreatedBy(userDetails.getName());
 				newEntity.setUser(userDetails);
-				// TODO: remove this method call
-				signerEntityService.add(newEntity);
 				// persist to DB
 				entityRepository.save(newEntity);
 				var uri = ServletUriComponentsBuilder.fromCurrentRequest().path(newEntity.getUUID()).build().toUri();
@@ -73,5 +78,10 @@ public class SignerEntityController {
 			logger.error("JSON fields are null. " + nullException);
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
 		}
+	}
+	
+	private User getCurrentSignedUser() {
+		String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userRepository.findByName(currentUserName);
 	}
 }

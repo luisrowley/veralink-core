@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.veralink.core.enums.BillingPlan;
 import com.veralink.data.UserRepository;
-import com.veralink.factory.SignerFactory;
 import com.veralink.factory.UserFactory;
 import com.veralink.model.User;
 

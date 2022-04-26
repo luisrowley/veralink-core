@@ -41,7 +41,7 @@ public class SignerEntity {
     @Column(name="last_signature_date")
 	private Date lastSignature;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 

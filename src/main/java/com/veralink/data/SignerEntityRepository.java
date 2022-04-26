@@ -9,5 +9,5 @@ import com.veralink.model.SignerEntity;
 @Component
 @Repository
 public interface SignerEntityRepository extends JpaRepository<SignerEntity, Long> {
-
+	SignerEntity findByName(String name);
 }
