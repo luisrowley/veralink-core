@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -23,8 +24,9 @@ public class TokenService {
 	}
 	
 	public String generateJWTToken(Long userId, String username) {
-		// TODO: move to .env file
-		String secretKey = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60";
+		Dotenv dotenv = null;
+        dotenv = Dotenv.configure().load();
+		String secretKey = dotenv.get("JWT_TOKEN_KEY");
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList("ROLE_USER");
 		
