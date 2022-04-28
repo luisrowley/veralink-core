@@ -25,9 +25,10 @@ public class UserController {
 	@PostMapping("create")
 	@ResponseBody
 	public ResponseEntity<User> create(@RequestBody User jsonEntity) {
-    	User existingUser = userRepository.findByName(jsonEntity.getName());
+    	User existingUserByName = userRepository.findByName(jsonEntity.getName());
+    	User existingUserByEmail = userRepository.findByEmail(jsonEntity.getEmail());
 
-    	if (existingUser == null) {
+    	if (existingUserByName == null && existingUserByEmail == null) {
 			try {
 				User newUser = userService.createNewUserWithCreds(jsonEntity);
 		        User _user = userRepository.save(newUser);
