@@ -42,6 +42,11 @@ public class VeralinkCoreApplication {
 			System.out.println(signedMessage);
 			System.out.println(VerifierService.validateCoseBytes(signedMessage, key));
 			System.out.println(VerifierService.getDecodedCBOR(signedMessage, key));
+			// save to .env
+			String filePath = "/home/vortex/cacerts/keystore.jks";
+			System.out.println(KeyService.createKeyStore(filePath));
+			System.out.println(KeyService.getPrivateKeyFromStore(filePath));
+			System.out.println(KeyService.getCertificateFromStore("eckey", filePath));
 	  	} catch (Exception e) {
 	        e.printStackTrace();
 	    }

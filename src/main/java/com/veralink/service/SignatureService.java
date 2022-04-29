@@ -1,22 +1,11 @@
 package com.veralink.service;
 
-import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.util.Arrays;
-
 import com.upokecenter.cbor.CBORObject;
 
 import COSE.AlgorithmID;
 import COSE.Attribute;
 import COSE.CoseException;
 import COSE.HeaderKeys;
-import COSE.KeyKeys;
 import COSE.OneKey;
 import COSE.Sign1Message;
 
