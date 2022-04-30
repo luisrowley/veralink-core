@@ -33,22 +33,28 @@ public class VeralinkCoreApplication {
 			
 			String message = "myTest";
 			
+			/*
 			KeyPair keyPair = KeyService.generateECKeyPair();
 			ECPublicKey ecPublicKey = (ECPublicKey) keyPair.getPublic();
 			ECPrivateKey ecPrivateKey = (ECPrivateKey) keyPair.getPrivate();
+			OneKey key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);*/
+			
+			KeyService keyservice = new KeyService();
+			String filePath = keyservice.keyStorePath;
+			KeyService.createKeyStoreFile(filePath);
+			System.out.println(keyservice.populateKeyStore(filePath));
+			System.out.println(keyservice.getPrivateKeyFromStore(filePath));
+			System.out.println(keyservice.getCertificateFromStore(keyservice.keyStoreAlias, filePath).getPublicKey());
+			
+			ECPublicKey ecPublicKey = (ECPublicKey) keyservice.getCertificateFromStore(keyservice.keyStoreAlias, filePath).getPublicKey();
+			ECPrivateKey ecPrivateKey = (ECPrivateKey) keyservice.getPrivateKeyFromStore(filePath);
 			OneKey key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
 			
 			byte[] signedMessage = SignatureService.signCBORMessage(message, key);
 			System.out.println(signedMessage);
 			System.out.println(VerifierService.validateCoseBytes(signedMessage, key));
 			System.out.println(VerifierService.getDecodedCBOR(signedMessage, key));
-			// save to .env
-			KeyService keyservice = new KeyService();
-			String filePath = keyservice.keyStorePath;
-			KeyService.createKeyStoreFile(filePath);
-			System.out.println(keyservice.populateKeyStore(filePath));
-			System.out.println(keyservice.getPrivateKeyFromStore(filePath));
-			System.out.println(keyservice.getCertificateFromStore(keyservice.keyStoreAlias, filePath));
+			
 	  	} catch (Exception e) {
 	        e.printStackTrace();
 	    }
