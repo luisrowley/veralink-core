@@ -1,5 +1,6 @@
 package com.veralink.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,9 +17,7 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
@@ -105,10 +104,24 @@ public class KeyService {
 		return secretKey;
 	}
 	
-	public static boolean createKeyStore(String filePath) {
+	public static void createKeyStoreFile(String filePath) {
+		try {
+		File storeFile = new File(filePath);
+		String filename =  storeFile.getName();
+		if (storeFile.createNewFile()) {
+	        System.out.println("File created: " + filename);
+	      } else {
+	        System.out.println("File already exists: " + filename);
+	      }
+		} catch (IOException e) {
+		  e.printStackTrace();
+		}
+	}
+	
+	public static boolean populateKeyStore(String filePath) {
 		// save to .env
 		char[] keyStorePass = "keyStorePassword".toCharArray();
-		
+
 		try {
 			KeyStore keyStore = KeyStore.getInstance("PKCS12");
 			KeyPair keyPair = generateECKeyPair();
@@ -118,6 +131,7 @@ public class KeyService {
 			Certificate cert = generateCertificate(ecPublicKey, ecPrivateKey);
 			Certificate[] chain = { generateCertificate(ecPublicKey, ecPrivateKey), cert };
 
+			
 			FileInputStream fis = new FileInputStream(filePath);
 			FileOutputStream fos = new FileOutputStream(filePath);
 
@@ -162,7 +176,7 @@ public class KeyService {
 		
 		final X509v3CertificateBuilder builder = new X509v3CertificateBuilder(issuer, serialNumber, issuedAt, expiresAt, subject, subPubKeyInfo);
 		
-		ContentSigner signer = new JcaContentSignerBuilder("SHA224withECDSA").setProvider(new BouncyCastleProvider()).build(ecPrivateKey);
+		ContentSigner signer = new JcaContentSignerBuilder("SHA512WITHECDSA").setProvider(new BouncyCastleProvider()).build(ecPrivateKey);
 		final X509CertificateHolder holder = builder.build(signer);
 
 		Certificate cert = new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider()).getCertificate(holder);
