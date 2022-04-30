@@ -2,7 +2,6 @@ package com.veralink.service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -39,12 +38,20 @@ import com.upokecenter.cbor.CBORObject;
 import COSE.CoseException;
 import COSE.KeyKeys;
 import COSE.OneKey;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class KeyService {
 
+	private static final int KEYSIZE = 256;
+	private final Dotenv dotenv = Dotenv.configure().load();
+	private final String keyStoreType = dotenv.get("KEYSTORE_TYPE");
+	public final String keyStoreAlias = dotenv.get("KEYSTORE_ALIAS");
+	public final String keyStorePath = dotenv.get("KEYSTORE_PATH");
+	private final char[] keyStorePass = dotenv.get("KEYSTORE_PASS").toCharArray();
+
 	public static KeyPair generateECKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("EC");
-        keyPairGen.initialize(256);
+        keyPairGen.initialize(KEYSIZE);
         KeyPair pair = keyPairGen.generateKeyPair();
         return pair;
 	}
@@ -53,7 +60,7 @@ public class KeyService {
         CBORObject map = CBORObject.NewMap();
         OneKey oneKey;
 
-        byte[] rgbD = ArrayFromBigNum(((ECPrivateKey) ecPrivateKey).getS(), 256);
+        byte[] rgbD = ArrayFromBigNum(((ECPrivateKey) ecPrivateKey).getS(), KEYSIZE);
     
         map.set(KeyKeys.KeyType.AsCBOR(), KeyKeys.KeyType_EC2);
         map.set(KeyKeys.EC2_Curve.AsCBOR(), getEcCurve(ecPublicKey));
@@ -65,15 +72,15 @@ public class KeyService {
         return oneKey;
 	}
 	
-	public static Certificate getCertificateFromStore(String alias, String filePath) {
-		// save to .env
-		char[] keyStorePass = "keyStorePassword".toCharArray();
+	public Certificate getCertificateFromStore(String alias, String filePath) {
+
+        char[] _keyStorePass = this.keyStorePass;
 		Certificate cert = null;
 		
 		try {
 			FileInputStream inputStream = new FileInputStream(filePath);
-			KeyStore keyStore = KeyStore.getInstance("PKCS12");
-			keyStore.load(inputStream, keyStorePass);
+			KeyStore keyStore = KeyStore.getInstance(this.keyStoreType);
+			keyStore.load(inputStream, _keyStorePass);
 			cert = keyStore.getCertificate(alias);
 		} catch (IOException
 				| KeyStoreException
@@ -84,16 +91,16 @@ public class KeyService {
 		return cert;
 	}
 	
-	public static Key getPrivateKeyFromStore(String filePath) {
-		// save to .env
-		char[] keyStorePass = "keyStorePassword".toCharArray();
+	public Key getPrivateKeyFromStore(String filePath) {
+
+        char[] _keyStorePass = this.keyStorePass;
 		Key secretKey = null;
 		
 		try {
 			FileInputStream inputStream = new FileInputStream(filePath);
-			KeyStore keyStore = KeyStore.getInstance("PKCS12");
-			keyStore.load(inputStream, keyStorePass);
-			secretKey = keyStore.getKey("eckey", keyStorePass);
+			KeyStore keyStore = KeyStore.getInstance(this.keyStoreType);
+			keyStore.load(inputStream, _keyStorePass);
+			secretKey = keyStore.getKey(this.keyStoreAlias, _keyStorePass);
 		} catch (IOException
 				| KeyStoreException
 				| NoSuchAlgorithmException
@@ -118,12 +125,12 @@ public class KeyService {
 		}
 	}
 	
-	public static boolean populateKeyStore(String filePath) {
-		// save to .env
-		char[] keyStorePass = "keyStorePassword".toCharArray();
+	public boolean populateKeyStore(String filePath) {
+
+        char[] _keyStorePass = this.keyStorePass;
 
 		try {
-			KeyStore keyStore = KeyStore.getInstance("PKCS12");
+			KeyStore keyStore = KeyStore.getInstance(this.keyStoreType);
 			KeyPair keyPair = generateECKeyPair();
 			ECPublicKey ecPublicKey = (ECPublicKey) keyPair.getPublic();
 			ECPrivateKey ecPrivateKey = (ECPrivateKey) keyPair.getPrivate();
@@ -131,15 +138,13 @@ public class KeyService {
 			Certificate cert = generateCertificate(ecPublicKey, ecPrivateKey);
 			Certificate[] chain = { generateCertificate(ecPublicKey, ecPrivateKey), cert };
 
-			
-			FileInputStream fis = new FileInputStream(filePath);
 			FileOutputStream fos = new FileOutputStream(filePath);
 
-			keyStore.load(null, keyStorePass);
+			keyStore.load(null, _keyStorePass);
 			// save alias to .env
-			keyStore.setKeyEntry("eckey", ecPrivateKey, keyStorePass, chain);
+			keyStore.setKeyEntry(this.keyStoreAlias, ecPrivateKey, _keyStorePass, chain);
 
-			keyStore.store(fos, keyStorePass);
+			keyStore.store(fos, _keyStorePass);
 			fos.close();
 			
 			return true;
@@ -176,7 +181,7 @@ public class KeyService {
 		
 		final X509v3CertificateBuilder builder = new X509v3CertificateBuilder(issuer, serialNumber, issuedAt, expiresAt, subject, subPubKeyInfo);
 		
-		ContentSigner signer = new JcaContentSignerBuilder("SHA512WITHECDSA").setProvider(new BouncyCastleProvider()).build(ecPrivateKey);
+		ContentSigner signer = new JcaContentSignerBuilder("SHA256WITHECDSA").setProvider(new BouncyCastleProvider()).build(ecPrivateKey);
 		final X509CertificateHolder holder = builder.build(signer);
 
 		Certificate cert = new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider()).getCertificate(holder);
