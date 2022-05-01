@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.upokecenter.cbor.CBORObject;
 import com.veralink.model.SignatureRequest;
 import com.veralink.model.SignatureResponse;
 import com.veralink.model.VerifyRequest;
@@ -29,25 +28,29 @@ public class SignatureController {
 	
 	private KeyService keyService;
 	private String filePath;
+	
+	private ECPublicKey ecPublicKey;
+	private ECPrivateKey ecPrivateKey;
 
 	public SignatureController() {
 		this.keyService = new KeyService();
 		this.filePath = keyService.keyStorePath;
+		
+		this.ecPublicKey = (ECPublicKey) keyService.getPublicKeyFromStore(filePath);
+		this.ecPrivateKey = (ECPrivateKey) keyService.getPrivateKeyFromStore(filePath);
 	}
 	
 	@PostMapping("/sign")
 	@ResponseBody
 	public ResponseEntity<SignatureResponse> sign(@RequestBody SignatureRequest jsonEntity) {
 
-		ECPublicKey ecPublicKey = (ECPublicKey) keyService.getPublicKeyFromStore(filePath);
-		ECPrivateKey ecPrivateKey = (ECPrivateKey) keyService.getPrivateKeyFromStore(filePath);
 		OneKey key = null;
 	
 		byte[] signedMessage = null;
 		SignatureResponse response = new SignatureResponse();
 
 		try {
-			key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
+			key = KeyService.generateOneKeyPair(this.ecPublicKey, this.ecPrivateKey);
 			signedMessage = SignatureService.signCBORMessage(jsonEntity.payload, key);
 
 			response.status = "OK";
@@ -63,8 +66,6 @@ public class SignatureController {
 	@ResponseBody
 	public ResponseEntity<VerifyResponse> verify(@RequestBody VerifyRequest jsonEntity) {
 
-		ECPublicKey ecPublicKey = (ECPublicKey) keyService.getPublicKeyFromStore(filePath);
-		ECPrivateKey ecPrivateKey = (ECPrivateKey) keyService.getPrivateKeyFromStore(filePath);
 		OneKey key = null;
 	
 		String encodedPayload = jsonEntity.encodedPayload;
@@ -72,7 +73,7 @@ public class SignatureController {
 		VerifyResponse response = new VerifyResponse();
 
 		try {
-			key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
+			key = KeyService.generateOneKeyPair(this.ecPublicKey, this.ecPrivateKey);
 			boolean isVerified = VerifierService.validateCoseBytes(decodedPayload, key);
 			
 			response.status = "OK";
