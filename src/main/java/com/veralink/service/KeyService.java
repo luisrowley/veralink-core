@@ -72,7 +72,7 @@ public class KeyService {
         return oneKey;
 	}
 	
-	public Certificate getCertificateFromStore(String alias, String filePath) {
+	public Certificate getCertificateFromStore(String filePath) {
 
         char[] _keyStorePass = this.keyStorePass;
 		Certificate cert = null;
@@ -81,7 +81,7 @@ public class KeyService {
 			FileInputStream inputStream = new FileInputStream(filePath);
 			KeyStore keyStore = KeyStore.getInstance(this.keyStoreType);
 			keyStore.load(inputStream, _keyStorePass);
-			cert = keyStore.getCertificate(alias);
+			cert = keyStore.getCertificate(this.keyStoreAlias);
 		} catch (IOException
 				| KeyStoreException
 				| NoSuchAlgorithmException
@@ -89,6 +89,10 @@ public class KeyService {
 			e.printStackTrace();
 		}
 		return cert;
+	}
+	
+	public Key getPublicKeyFromStore(String filePath) {
+		return this.getCertificateFromStore(filePath).getPublicKey();
 	}
 	
 	public Key getPrivateKeyFromStore(String filePath) {
@@ -116,9 +120,9 @@ public class KeyService {
 		File storeFile = new File(filePath);
 		String filename =  storeFile.getName();
 		if (storeFile.createNewFile()) {
-	        System.out.println("File created: " + filename);
+	        System.out.println("-> File created: " + filename);
 	      } else {
-	        System.out.println("File already exists: " + filename);
+	        System.out.println("-> File already exists: " + filename);
 	      }
 		} catch (IOException e) {
 		  e.printStackTrace();

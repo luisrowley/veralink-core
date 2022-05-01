@@ -1,5 +1,87 @@
 package com.veralink.controller;
 
-public class SignatureController {
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.upokecenter.cbor.CBORObject;
+import com.veralink.model.SignatureRequest;
+import com.veralink.model.SignatureResponse;
+import com.veralink.model.VerifyRequest;
+import com.veralink.model.VerifyResponse;
+import com.veralink.service.KeyService;
+import com.veralink.service.SignatureService;
+import com.veralink.service.VerifierService;
+
+import COSE.OneKey;
+import nl.minvws.encoding.Base45;
+
+@RestController
+@RequestMapping("/api/signature")
+public class SignatureController {
+	
+	private KeyService keyService;
+	private String filePath;
+
+	public SignatureController() {
+		this.keyService = new KeyService();
+		this.filePath = keyService.keyStorePath;
+	}
+	
+	@PostMapping("/sign")
+	@ResponseBody
+	public ResponseEntity<SignatureResponse> sign(@RequestBody SignatureRequest jsonEntity) {
+
+		ECPublicKey ecPublicKey = (ECPublicKey) keyService.getPublicKeyFromStore(filePath);
+		ECPrivateKey ecPrivateKey = (ECPrivateKey) keyService.getPrivateKeyFromStore(filePath);
+		OneKey key = null;
+	
+		byte[] signedMessage = null;
+		SignatureResponse response = new SignatureResponse();
+
+		try {
+			key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
+			signedMessage = SignatureService.signCBORMessage(jsonEntity.payload, key);
+
+			response.status = "OK";
+			response.encodedPayload = Base45.getEncoder().encodeToString(signedMessage);
+			return ResponseEntity.ok(response);
+		} catch(Exception exception) {
+			System.out.println(exception);
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
+		}
+	}
+	
+	@PostMapping("/verify")
+	@ResponseBody
+	public ResponseEntity<VerifyResponse> verify(@RequestBody VerifyRequest jsonEntity) {
+
+		ECPublicKey ecPublicKey = (ECPublicKey) keyService.getPublicKeyFromStore(filePath);
+		ECPrivateKey ecPrivateKey = (ECPrivateKey) keyService.getPrivateKeyFromStore(filePath);
+		OneKey key = null;
+	
+		String encodedPayload = jsonEntity.encodedPayload;
+		byte[] decodedPayload = Base45.getDecoder().decode(encodedPayload);
+		VerifyResponse response = new VerifyResponse();
+
+		try {
+			key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
+			boolean isVerified = VerifierService.validateCoseBytes(decodedPayload, key);
+			
+			response.status = "OK";
+			response.isVerified = isVerified;
+			return ResponseEntity.ok(response);
+
+		} catch(Exception exception) {
+			System.out.print(exception);
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
+		}
+	}
 }

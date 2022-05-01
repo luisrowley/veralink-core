@@ -42,11 +42,15 @@ public class VeralinkCoreApplication {
 			KeyService keyservice = new KeyService();
 			String filePath = keyservice.keyStorePath;
 			KeyService.createKeyStoreFile(filePath);
-			System.out.println(keyservice.populateKeyStore(filePath));
-			System.out.println(keyservice.getPrivateKeyFromStore(filePath));
-			System.out.println(keyservice.getCertificateFromStore(keyservice.keyStoreAlias, filePath).getPublicKey());
+
+			if (keyservice.populateKeyStore(filePath)) {
+				System.out.println("-> Keys successfully saved to KeyStore.");
+			}
+			else {
+				System.out.println("-> Error saving keys to KeyStore.");
+			}
 			
-			ECPublicKey ecPublicKey = (ECPublicKey) keyservice.getCertificateFromStore(keyservice.keyStoreAlias, filePath).getPublicKey();
+			ECPublicKey ecPublicKey = (ECPublicKey) keyservice.getPublicKeyFromStore(filePath);
 			ECPrivateKey ecPrivateKey = (ECPrivateKey) keyservice.getPrivateKeyFromStore(filePath);
 			OneKey key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
 			
