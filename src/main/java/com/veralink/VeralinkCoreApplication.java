@@ -1,10 +1,7 @@
 package com.veralink;
 
-import java.security.KeyPair;
 import java.security.Provider;
 import java.security.Security;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.SpringApplication;
@@ -18,10 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.veralink.core.security.JWTAuthorizationFilter;
 import com.veralink.service.KeyService;
-import com.veralink.service.SignatureService;
-import com.veralink.service.VerifierService;
-
-import COSE.OneKey;
 
 @SpringBootApplication
 public class VeralinkCoreApplication {
@@ -30,14 +23,6 @@ public class VeralinkCoreApplication {
 		try {
 			BouncyCastleInitializer.installProvider();
 			SpringApplication.run(VeralinkCoreApplication.class, args);
-			
-			String message = "myTest";
-			
-			/*
-			KeyPair keyPair = KeyService.generateECKeyPair();
-			ECPublicKey ecPublicKey = (ECPublicKey) keyPair.getPublic();
-			ECPrivateKey ecPrivateKey = (ECPrivateKey) keyPair.getPrivate();
-			OneKey key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);*/
 			
 			KeyService keyservice = new KeyService();
 			String filePath = keyservice.keyStorePath;
@@ -48,16 +33,7 @@ public class VeralinkCoreApplication {
 			}
 			else {
 				System.out.println("-> Error saving keys to KeyStore.");
-			}
-			
-			ECPublicKey ecPublicKey = (ECPublicKey) keyservice.getPublicKeyFromStore(filePath);
-			ECPrivateKey ecPrivateKey = (ECPrivateKey) keyservice.getPrivateKeyFromStore(filePath);
-			OneKey key = KeyService.generateOneKeyPair(ecPublicKey, ecPrivateKey);
-			
-			byte[] signedMessage = SignatureService.signCBORMessage(message, key);
-			System.out.println(signedMessage);
-			System.out.println(VerifierService.validateCoseBytes(signedMessage, key));
-			System.out.println(VerifierService.getDecodedCBOR(signedMessage, key));
+			}	
 			
 	  	} catch (Exception e) {
 	        e.printStackTrace();
