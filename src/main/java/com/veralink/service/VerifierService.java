@@ -20,13 +20,10 @@ public class VerifierService {
 	}
 	
 	public static CBORObject getDecodedCBOR(byte[] coseSigned, OneKey key) throws CoseException {
-		CBORObject payloadDecoded = null;
+		//CBORObject payloadDecoded = null;
 		Sign1Message messageDecoded = (Sign1Message) Sign1Message.DecodeFromBytes(coseSigned);
 
-		if(validateCoseBytes(coseSigned, key)) {
-	        payloadDecoded = CBORObject.DecodeFromBytes(messageDecoded.GetContent());
-		}
+	    return CBORObject.DecodeFromBytes(messageDecoded.GetContent());
 
-		return payloadDecoded;
 	}
 }

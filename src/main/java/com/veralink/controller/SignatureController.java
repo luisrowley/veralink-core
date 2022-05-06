@@ -54,6 +54,7 @@ public class SignatureController {
 			signedMessage = SignatureService.signCBORMessage(jsonEntity.payload, key);
 
 			response.status = "OK";
+			// TODO: apply zlib compression
 			response.encodedPayload = Base45.getEncoder().encodeToString(signedMessage);
 			return ResponseEntity.ok(response);
 		} catch(Exception exception) {
@@ -69,15 +70,17 @@ public class SignatureController {
 		OneKey key = null;
 	
 		String encodedPayload = jsonEntity.encodedPayload;
+		// TODO: apply zlib decompression
 		byte[] decodedPayload = Base45.getDecoder().decode(encodedPayload);
 		VerifyResponse response = new VerifyResponse();
 
 		try {
 			key = KeyService.generateOneKeyPair(this.ecPublicKey, this.ecPrivateKey);
 			boolean isVerified = VerifierService.validateCoseBytes(decodedPayload, key);
-			
+
 			response.status = "OK";
 			response.isVerified = isVerified;
+			response.decodedCBOR = VerifierService.getDecodedCBOR(decodedPayload, key).AsString();
 			return ResponseEntity.ok(response);
 
 		} catch(Exception exception) {

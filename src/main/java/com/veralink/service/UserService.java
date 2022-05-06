@@ -18,8 +18,8 @@ public class UserService {
 	UserRepository userRepository;
 
 	private UserFactory factory;
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-	private TokenService tokenService = new TokenService();
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+	private final TokenService tokenService = new TokenService();
 	
 	public void createFactory() {
 		if (factory == null) {
