@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.veralink.data.UserRepository;
-import com.veralink.factory.UserFactory;
+import com.veralink.data.factory.UserFactory;
 import com.veralink.model.User;
 
 @Service

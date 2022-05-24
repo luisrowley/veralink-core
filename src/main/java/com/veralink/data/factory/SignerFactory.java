@@ -1,6 +1,6 @@
-package com.veralink.factory;
+package com.veralink.data.factory;
 
-import com.veralink.factory.types.SignerFactoryType;
+import com.veralink.data.factory.types.SignerFactoryType;
 import com.veralink.model.SignerEntity;
 
 

@@ -1,4 +1,4 @@
-package com.veralink.factory.types;
+package com.veralink.data.factory.types;
 
 import com.veralink.core.enums.BillingPlan;
 import com.veralink.model.User;

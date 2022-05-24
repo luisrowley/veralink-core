@@ -1,4 +1,4 @@
-package com.veralink.helper;
+package com.veralink.data.validators;
 
 import org.json.JSONArray;
 import org.json.JSONException;

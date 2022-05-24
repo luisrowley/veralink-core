@@ -1,7 +1,7 @@
-package com.veralink.factory;
+package com.veralink.data.factory;
 
 import com.veralink.core.enums.BillingPlan;
-import com.veralink.factory.types.UserFactoryType;
+import com.veralink.data.factory.types.UserFactoryType;
 import com.veralink.model.User;
 
 public class UserFactory implements UserFactoryType {

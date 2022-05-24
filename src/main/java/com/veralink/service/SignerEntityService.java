@@ -2,7 +2,7 @@ package com.veralink.service;
 
 import org.springframework.stereotype.Service;
 
-import com.veralink.factory.SignerFactory;
+import com.veralink.data.factory.SignerFactory;
 import com.veralink.model.SignerEntity;
 
 @Service

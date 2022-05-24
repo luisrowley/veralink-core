@@ -72,22 +72,22 @@
 		    <artifactId>jakarta.xml.bind-api</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>com.augustcellars.cose</groupId>
-		  <artifactId>cose-java</artifactId>
-		  <version>0.9.7</version>
+			<groupId>com.augustcellars.cose</groupId>
+			<artifactId>cose-java</artifactId>
+			<version>0.9.7</version>
 		</dependency>
 		<dependency>
-	      <groupId>com.fasterxml.jackson.dataformat</groupId>
-	      <artifactId>jackson-dataformat-cbor</artifactId>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-cbor</artifactId>
 	    </dependency>
 	    <dependency>
-	      <groupId>org.bouncycastle</groupId>
-	      <artifactId>bcpkix-jdk15on</artifactId>
-	      <version>1.58</version>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+			<version>1.58</version>
 		</dependency>
 		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
     	</dependency>
     	<dependency>
 		    <groupId>org.springframework.data</groupId>
@@ -99,9 +99,9 @@
 		    <version>2.2.3</version>
 		</dependency>
 		<dependency>
-		  <groupId>io.github.ehn-digital-green-development</groupId>
-		  <artifactId>base45</artifactId>
-		  <version>0.0.3</version>
+			<groupId>io.github.ehn-digital-green-development</groupId>
+			<artifactId>base45</artifactId>
+			<version>0.0.3</version>
 		</dependency>
 	</dependencies>
 
