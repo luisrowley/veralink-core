@@ -92,16 +92,10 @@ public class KeyService {
 	}
 	
 	public Key getPublicKeyFromStore(String filePath) {
-		if (!checkCertFileExists(filePath)) {
-			return null;
-		}
 		return this.getCertificateFromStore(filePath).getPublicKey();
 	}
 	
 	public Key getPrivateKeyFromStore(String filePath) {
-		if (!checkCertFileExists(filePath)) {
-			return null;
-		}
         char[] _keyStorePass = this.keyStorePass;
 		Key secretKey = null;
 		

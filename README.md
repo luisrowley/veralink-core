@@ -68,6 +68,7 @@ spring.datasource.password=<PASS>
 spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.MySQL5InnoDBDialect
 spring.jpa.hibernate.ddl-auto=update
 spring.mvc.pathmatch.matching-strategy = ANT_PATH_MATCHER
+server.ssl.key-store-type=PKCS12
 ```
 4) Navigate to the root project folder:
 ```bash
