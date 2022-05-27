@@ -71,7 +71,7 @@ public class KeyService {
 
         return oneKey;
 	}
-	
+
 	public Certificate getCertificateFromStore(String filePath) {
 
         char[] _keyStorePass = this.keyStorePass;
@@ -92,11 +92,16 @@ public class KeyService {
 	}
 	
 	public Key getPublicKeyFromStore(String filePath) {
+		if (!checkCertFileExists(filePath)) {
+			return null;
+		}
 		return this.getCertificateFromStore(filePath).getPublicKey();
 	}
 	
 	public Key getPrivateKeyFromStore(String filePath) {
-
+		if (!checkCertFileExists(filePath)) {
+			return null;
+		}
         char[] _keyStorePass = this.keyStorePass;
 		Key secretKey = null;
 		
@@ -165,6 +170,11 @@ public class KeyService {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	private static boolean checkCertFileExists(String path) {
+		File f = new File(path);
+		return f.exists() && !f.isDirectory();
 	}
 
 	private static Certificate generateCertificate(ECPublicKey ecPublicKey, ECPrivateKey ecPrivateKey)
