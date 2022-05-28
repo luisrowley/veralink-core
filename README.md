@@ -148,9 +148,43 @@ grant all on veralink.* to 'username'@'%';
 mvn spring-boot:run
 ```
 
-## Usage
+## Interacting with the API
 
-## See it in action
+- The first request must be either authentication via **login** or **creating** a new user account if none exists:
+This is done via **POST** request to the endpoint **/api/user/signin** and **/api/user/create** respectively:
 
-### Understanding the results
+![User login request](img/REST-singin-user.png)
+
+AND
+
+![User login request](img/REST-create-user.png)
+
+- Subsequent requests must include the returned **Bearer Token** as an **Authorization** HTTP header in order to be authorized:
+
+![User login request](img/REST-sign-headers.png)
+
+- Now we could send a request of payload signature to the **/api/signature/sign** endpoint and a JSON formatted payload like so:
+
+![User login request](img/REST-sign.png)
+
+- And verify the result of the encoded payload like this:
+
+![User login request](img/REST-verify.png)
+
+## Understanding the Results
+
+- A valid payload with its corresponding EC signature gets verified OK if its data hasn't been tampered with. We may see this as the following **/verify** response: 
+
+![User login request](img/REST-correct-sign.png)
+
+- An invalid payload signature gets a **isVerified: false** on the response body:
+
+![User login request](img/REST-incorrect-sign.png)
+
+## Swagger specification
+
+To have a more comprehensible list of HTTP request and their possible payloads, please visit the project's [Swagger page](http://localhost:8080/swagger-ui.html) at.
+
+### Authors
+- LeWiSs
 
