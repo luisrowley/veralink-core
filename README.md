@@ -62,7 +62,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 - Checking installation:
 ```bash
 sudo docker run hello-world
-- ```
+```
 
 ### 2) Build the entire project using docker-compose:
 ```bash
